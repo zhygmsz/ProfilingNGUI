@@ -1,19 +1,19 @@
-´óË¼Â·
-UIPanel,UIWidget,UIDrawCall,UIGeometryÕâËÄ¸öÀàÖ®¼äµÄ¹ØÏµ,UIPanelÄÚµÄUIWidgetÅÅĞò´¥·¢Ê±»ú,DC¹¹½¨Ï¸½Ú,DC¸üĞÂÏ¸½Ú
-UIRect,UIWidget,UIBasicSprite,UISprite,UITexture,UILabel,äÖÈ¾Êı¾İ¹¹½¨Ï¸½Ú,ºÍ¸÷¸öUIRectÅÉÉúÀàÓĞ¹Ø,¹¹½¨Ê±ÈçºÎ¸´ÓÃÄÚ´æ,ÈçºÎ¼õÉÙGC,ÈçºÎ¼õÉÙ¸üĞÂ´ÎÊı,ºÍDC¹ØÏµ
-ÃªµãºÍ±ä»»¾ØÕó(Î»ÖÃ¸üĞÂ),¸üĞÂÊ±»ú,
-UIPanelµÄ²Ã¼ô,UIScrollViewµÄ»¬¶¯,
-UIRootÆÁÄ»ÊÊÅä,
-NGUIÊÂ¼şÅĞ¶¨Á÷³Ì,UICamera
+å¤§æ€è·¯
+UIPanel,UIWidget,UIDrawCall,UIGeometryè¿™å››ä¸ªç±»ä¹‹é—´çš„å…³ç³»,UIPanelå†…çš„UIWidgetæ’åºè§¦å‘æ—¶æœº,DCæ„å»ºç»†èŠ‚,DCæ›´æ–°ç»†èŠ‚
+UIRect,UIWidget,UIBasicSprite,UISprite,UITexture,UILabel,æ¸²æŸ“æ•°æ®æ„å»ºç»†èŠ‚,å’Œå„ä¸ªUIRectæ´¾ç”Ÿç±»æœ‰å…³,æ„å»ºæ—¶å¦‚ä½•å¤ç”¨å†…å­˜,å¦‚ä½•å‡å°‘GC,å¦‚ä½•å‡å°‘æ›´æ–°æ¬¡æ•°,å’ŒDCå…³ç³»
+é”šç‚¹å’Œå˜æ¢çŸ©é˜µ(ä½ç½®æ›´æ–°),æ›´æ–°æ—¶æœº,
+UIPanelçš„è£å‰ª,UIScrollViewçš„æ»‘åŠ¨,
+UIRootå±å¹•é€‚é…,
+NGUIäº‹ä»¶åˆ¤å®šæµç¨‹,UICamera
 
-UIRect £º MonoBehaviour
-	½éÉÜ£º³éÏóÀà,¼Ì³Ğ×ÔMonoBehaviour,ÊÇNGUI¿ò¼ÜµÄ¸ù»ùÀà
-	Ã¶¾Ù£º
+UIRect ï¼š MonoBehaviour
+	ä»‹ç»ï¼šæŠ½è±¡ç±»,ç»§æ‰¿è‡ªMonoBehaviour,æ˜¯NGUIæ¡†æ¶çš„æ ¹åŸºç±»
+	æšä¸¾ï¼š
 		+AnchorUpdate:
 			OnEnable,
 			OnUpdate,
 			OnStart,
-	ÊµÀı×Ö¶Î£º
+	å®ä¾‹å­—æ®µï¼š
 			+leftAnchor:AnchorPoint,
 			+rightAnchor:AnchorPoint,
 			+bottomAnchor:AnchorPoint,
@@ -24,8 +24,8 @@ UIRect £º MonoBehaviour
 			#mGo:GameObject,
 			#mTrans:Transform,
 			#mChildren:BetterList<UIRect>,
-			#mChanged:bool = true,Ö÷ÒªÔÚUIWidget.UpdateGeometry·½·¨Àï×öÅĞ¶¨ÒÀ¾İ,UIRectÅÉÉúÀàÀï´¥·¢¸Ã×Ö¶ÎÎªtrueµÄÇé¿öÈçÏÂ,
-									ÓĞUIBasicSprite(fillDirection,fillAmount,invert),UISprite(spriteName),UILabel(ProcessText),UIWidget(UpdateVisibility),
+			#mChanged:bool = true,ä¸»è¦åœ¨UIWidget.UpdateGeometryæ–¹æ³•é‡Œåšåˆ¤å®šä¾æ®,UIRectæ´¾ç”Ÿç±»é‡Œè§¦å‘è¯¥å­—æ®µä¸ºtrueçš„æƒ…å†µå¦‚ä¸‹,
+									æœ‰UIBasicSprite(fillDirection,fillAmount,invert),UISprite(spriteName),UILabel(ProcessText),UIWidget(UpdateVisibility),
 			#mParentFound:bool = false,
 			-mUpdateAnchors:bool = true,
 			-mUpdateFrame:int = -1,
@@ -36,9 +36,9 @@ UIRect £º MonoBehaviour
 			#mCam:Camera
 			
 			#mStarted:bool = false,
-			+finalAlpha:float = 1f,³äµ±äÖÈ¾Êı¾İ×îÖÕµÄalpha,ÓÉUICamera.RaycastÊ¹ÓÃ,ÓÉUIWidget.UpdateFinalAlphaºÍUIPanel.CalculateFinalAlphaÁ½¸ö·½·¨¸üĞÂ,
+			+finalAlpha:float = 1f,å……å½“æ¸²æŸ“æ•°æ®æœ€ç»ˆçš„alpha,ç”±UICamera.Raycastä½¿ç”¨,ç”±UIWidget.UpdateFinalAlphaå’ŒUIPanel.CalculateFinalAlphaä¸¤ä¸ªæ–¹æ³•æ›´æ–°,
 			
-	ÊµÀıÊôĞÔ£º
+	å®ä¾‹å±æ€§ï¼š
 			+cachedGameObject:GameObject,get
 			+cachedTransform:Transform,get
 			+anchorCamera:Camera,get
@@ -49,27 +49,27 @@ UIRect £º MonoBehaviour
 			+parent:UIRect,get
 			+root:UIRoot,get
 			+isAnchored:bool,get
-			abstract +alpha:float,get set,local alpha,UIWidgetµÄÅÉÉúÀà¶ÔalphaÓĞ²»Í¬µÄ¼ÆËã·½Ê½ÒÔ¼°Ê¹ÓÃ·½Ê½
+			abstract +alpha:float,get set,local alpha,UIWidgetçš„æ´¾ç”Ÿç±»å¯¹alphaæœ‰ä¸åŒçš„è®¡ç®—æ–¹å¼ä»¥åŠä½¿ç”¨æ–¹å¼
 			abstract +Vector3[] localCorners,get
 			abstract +Vector3[] worldCorners,get
 			#cameraRayDistance:float,
-	ÊµÀı·½·¨£º
-			abstract +float CalculateFinalAlpha(int frameID),UIWidgetºÍUIPanelÁ½¸öÖ±½ÓÅÉÉúÀàÖØĞ´ÁË¸Ã·½·¨,ÓÃÓÚ¼ÆËãUIRect.finalAlpha£¨µİ¹éĞÎÊ½¿¼ÂÇ¸¸½Úµã£©
-			virtual +Invalidate(bool includeChildren),Ê¹¸ÃUIRectÎŞĞ§,½«UIRect.mChangedÖÃÎªtrue,²¢ÅĞ¶ÏÊÇ·ñĞèÒª±éÀú×Ó½Úµã,Èçalpha¸Ä¶¯ÔòincludeChildrenÎªtrue,ÑÕÉ«±ä»¯ÔòÎªfalse,
-													UIRectÅÉÉúÀà¸²Ğ´¸Ã·½·¨²¢Ìí¼ÓÂß¼­
-	¾²Ì¬×Ö¶Î£º
-			#mSides:Vector3[],±ÜÃâGCµÄÁÙÊ±±äÁ¿
-	¾²Ì¬·½·¨£º
+	å®ä¾‹æ–¹æ³•ï¼š
+			abstract +float CalculateFinalAlpha(int frameID),UIWidgetå’ŒUIPanelä¸¤ä¸ªç›´æ¥æ´¾ç”Ÿç±»é‡å†™äº†è¯¥æ–¹æ³•,ç”¨äºè®¡ç®—UIRect.finalAlphaï¼ˆé€’å½’å½¢å¼è€ƒè™‘çˆ¶èŠ‚ç‚¹ï¼‰
+			virtual +Invalidate(bool includeChildren),ä½¿è¯¥UIRectæ— æ•ˆ,å°†UIRect.mChangedç½®ä¸ºtrue,å¹¶åˆ¤æ–­æ˜¯å¦éœ€è¦éå†å­èŠ‚ç‚¹,å¦‚alphaæ”¹åŠ¨åˆ™includeChildrenä¸ºtrue,é¢œè‰²å˜åŒ–åˆ™ä¸ºfalse,
+													UIRectæ´¾ç”Ÿç±»è¦†å†™è¯¥æ–¹æ³•å¹¶æ·»åŠ é€»è¾‘
+	é™æ€å­—æ®µï¼š
+			#mSides:Vector3[],é¿å…GCçš„ä¸´æ—¶å˜é‡
+	é™æ€æ–¹æ³•ï¼š
 	
 	AnchorPoint
-		½éÉÜ£ºUIRectÀàÄÚµÄpublic class,
-		ÊµÀı×Ö¶Î£º
+		ä»‹ç»ï¼šUIRectç±»å†…çš„public class,
+		å®ä¾‹å­—æ®µï¼š
 				+target:Transform,
 				+relative:float,
 				+absolute:int,
 				+rect:UIRect,
 				+targetCam:Camera,
-		ÊµÀı·½·¨£º
+		å®ä¾‹æ–¹æ³•ï¼š
 				+AnchorPoint(),
 				+AnchorPoint(float relative),
 				+Set(float relative, int absolute),
@@ -79,145 +79,145 @@ UIRect £º MonoBehaviour
 				+SetHorizontal(Transform target, float localPos),
 				+SetVertical(Transform target, float localPos),
 				+Vector3[] GetSides(Transform relativeTo),
-		¾²Ì¬×Ö¶Î£º
-		¾²Ì¬·½·¨£º
+		é™æ€å­—æ®µï¼š
+		é™æ€æ–¹æ³•ï¼š
 
 UIWidget : UIRect
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-			+panel:UIPanel,UIWidgetËùÊôµÄUIPanel,Í¨¹ıUIWidget.CreatePanel·½·¨²éÕÒ,ÔÚ¼ÆËãUIWidgetµÄdepthÊ±,»áÓÃµ½¸Ã×Ö¶Î
-			-mIsVisibleByAlpha:bool = true,°´alphaÀ´¿´¸ÃUIWidgetÊÇ·ñ¿É¼û,´óÓÚ0.001¼´Îª¿É¼û,UIWidget.UpdateVisibility·½·¨Àï¶Ô¸Ã×Ö¶Î¸üĞÂ,ÔÚUIWidget.UpdateGeometry·½·¨ÀïÊ¹ÓÃ,
-			-mIsVisibleByPanel:bool = true,°´UIPanelÀ´¿´¸ÃUIWidgetÊÇ·ñ¿É¼û,±»ÍêÈ«²Ã¼ôÁË²»¿É¼û,ÓÉUIWidget.UpdateVisibility·½·¨¶Ô¸Ã×Ö¶Î¸üĞÂ,ºÍmIsVisibleByAlphaÒ»Æğ¹±Ï×isVisible²¿·ÖÒò×Ó,
-			-mLastAlpha:float = 0f,ÔÚUIWidget.UpdateGeometry·½·¨ÀïÊ¹ÓÃ,³Ğ½ÓUIWidget.CalculateFinalAlpha(frame)·µ»ØÖµ,²¢ÓÃÀ´ÅĞ¶Ïµ±Ç°frameµÄfinalAlphaºÍÉÏÒ»´ÎµÄfinalAlphaÏà±ÈÊÇ·ñÓĞ¸Ä±ä
-	ÊµÀıÊôĞÔ£º
-			+isVisible,get,UIWidget¶ÔÍâµÄ×Ü¿É¼ûĞÔ,ÓÉUICamera.RaycastÊ¹ÓÃ,UIPanelµÄFindDrawCall,FillDrawCall,FillAllDrawCallsÈı¸ö·½·¨Ê¹ÓÃ,
-							ÓÉmIsVisibleByAlpha,mIsVisibleByPanel,mIsInFront,UIRect.finalAlpha,NGUITools.GetActive(this)Õâ¼¸²¿·Ö¹²Í¬×é³É,
-	ÊµÀı·½·¨£º
-			+float CalculateFinalAlpha(int frameID),ÄÚ²¿µ÷ÓÃÁËUpdateFinalAlpha(int frameID)·½·¨,¼ÆËã³öUIRect.finalAlpha,²¢·µ»Ø
-			#UpdateFinalAlpha(int frameID),ÒÔµİ¹éĞÎÊ½¿¼ÂÇ¸¸½ÚµãµÄUIRect.finalAlpha,²¢³ËÒÔUIWidgetµÄUIWidget.mColor.a,Ïà³Ë½á¹û´æµ½UIWidgetµÄUIRect.finalAlphaÀï,¹©ºóĞøÂß¼­Ê¹ÓÃ
-			+SetDirty(),Èç¹ûUIWidget.drawCall²»Îªnull,Ôò½«UIWidget.drawCall.isDirtyÖÃÎªtrue;Èç¹ûUIWidget.drawCallÎªnull,Ôòµ÷ÓÃUIWidget.CreatePanel·½·¨ÎªUIWidget´´½¨UIWidget.panel×Ö¶Î
-			+UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),¸üĞÂ(´æÔÚÒ»¸ö²»Í¬)UIWidgetµÄmIsVisibleByAlphaºÍmIsVisibleByPanel,²¢ÖÃUIRect.mChangedÎªtrue,
-			+UPdateGeometry(int frame),¸üĞÂUIWidget,Ñ¡ÔñĞÔÌî³äUIWidget.geometry,²¢·µ»ØÊÇ·ñÓĞ¸üĞÂ,UIPanel.UpdateWidgets·½·¨Àïµ÷ÓÃ
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
-			+int PanelCompareFunc(UIWidget left, UIWidget right),UIPanelÄÚµÄËùÓĞUIWidgetÅÅĞò·½·¨,°´ÕÕUIWidget.mDepth´ÓĞ¡µ½´óµÄË³Ğò,Èç¹ûUIWidget.mDepthÏàÍ¬,ÔòÓĞ²ÄÖÊµÄÔÚÇ°,ÎŞ²ÄÖÊµÄÔÚºó,ÔÚUIPanelÄÚÊ¹ÓÃ
-			+int FullCompareFunc(UIWidget left, UIWidget right),ÍêÈ«¿¼ÂÇËùÓĞÅÅĞòÒòËØ,ÏÈÊÇÅĞ¶ÏÁ½¸öUIWidgetËùÊôµÄUIPanelµÄdepth,°´ÕÕ´ÓĞ¡µ½´ó,
-																Èç¹û´¦ÓÚÍ¬Ò»¸öUIPanelÔòÊ¹ÓÃPanelCompareFunc·½·¨,ÔÚNGUIToolsºÍNGUIEditorToolsÀï¸÷ÓĞÒ»´¦Ê¹ÓÃ
-	ÒÉÎÊ£º
-		UIRect.finalAlphaÎªÊ²Ã´ºÍUIWidget.mIsVisibleByAlpha¹²´æ,Á½ÕßÓĞ¸÷×Ô²»Í¬µÄĞèÇóÃ´?
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+			+panel:UIPanel,UIWidgetæ‰€å±çš„UIPanel,é€šè¿‡UIWidget.CreatePanelæ–¹æ³•æŸ¥æ‰¾,åœ¨è®¡ç®—UIWidgetçš„depthæ—¶,ä¼šç”¨åˆ°è¯¥å­—æ®µ
+			-mIsVisibleByAlpha:bool = true,æŒ‰alphaæ¥çœ‹è¯¥UIWidgetæ˜¯å¦å¯è§,å¤§äº0.001å³ä¸ºå¯è§,UIWidget.UpdateVisibilityæ–¹æ³•é‡Œå¯¹è¯¥å­—æ®µæ›´æ–°,åœ¨UIWidget.UpdateGeometryæ–¹æ³•é‡Œä½¿ç”¨,
+			-mIsVisibleByPanel:bool = true,æŒ‰UIPanelæ¥çœ‹è¯¥UIWidgetæ˜¯å¦å¯è§,è¢«å®Œå…¨è£å‰ªäº†ä¸å¯è§,ç”±UIWidget.UpdateVisibilityæ–¹æ³•å¯¹è¯¥å­—æ®µæ›´æ–°,å’ŒmIsVisibleByAlphaä¸€èµ·è´¡çŒ®isVisibleéƒ¨åˆ†å› å­,
+			-mLastAlpha:float = 0f,åœ¨UIWidget.UpdateGeometryæ–¹æ³•é‡Œä½¿ç”¨,æ‰¿æ¥UIWidget.CalculateFinalAlpha(frame)è¿”å›å€¼,å¹¶ç”¨æ¥åˆ¤æ–­å½“å‰frameçš„finalAlphaå’Œä¸Šä¸€æ¬¡çš„finalAlphaç›¸æ¯”æ˜¯å¦æœ‰æ”¹å˜
+	å®ä¾‹å±æ€§ï¼š
+			+isVisible,get,UIWidgetå¯¹å¤–çš„æ€»å¯è§æ€§,ç”±UICamera.Raycastä½¿ç”¨,UIPanelçš„FindDrawCall,FillDrawCall,FillAllDrawCallsä¸‰ä¸ªæ–¹æ³•ä½¿ç”¨,
+							ç”±mIsVisibleByAlpha,mIsVisibleByPanel,mIsInFront,UIRect.finalAlpha,NGUITools.GetActive(this)è¿™å‡ éƒ¨åˆ†å…±åŒç»„æˆ,
+	å®ä¾‹æ–¹æ³•ï¼š
+			+float CalculateFinalAlpha(int frameID),å†…éƒ¨è°ƒç”¨äº†UpdateFinalAlpha(int frameID)æ–¹æ³•,è®¡ç®—å‡ºUIRect.finalAlpha,å¹¶è¿”å›
+			#UpdateFinalAlpha(int frameID),ä»¥é€’å½’å½¢å¼è€ƒè™‘çˆ¶èŠ‚ç‚¹çš„UIRect.finalAlpha,å¹¶ä¹˜ä»¥UIWidgetçš„UIWidget.mColor.a,ç›¸ä¹˜ç»“æœå­˜åˆ°UIWidgetçš„UIRect.finalAlphaé‡Œ,ä¾›åç»­é€»è¾‘ä½¿ç”¨
+			+SetDirty(),å¦‚æœUIWidget.drawCallä¸ä¸ºnull,åˆ™å°†UIWidget.drawCall.isDirtyç½®ä¸ºtrue;å¦‚æœUIWidget.drawCallä¸ºnull,åˆ™è°ƒç”¨UIWidget.CreatePanelæ–¹æ³•ä¸ºUIWidgetåˆ›å»ºUIWidget.panelå­—æ®µ
+			+UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),æ›´æ–°(å­˜åœ¨ä¸€ä¸ªä¸åŒ)UIWidgetçš„mIsVisibleByAlphaå’ŒmIsVisibleByPanel,å¹¶ç½®UIRect.mChangedä¸ºtrue,
+			+UPdateGeometry(int frame),æ›´æ–°UIWidget,é€‰æ‹©æ€§å¡«å……UIWidget.geometry,å¹¶è¿”å›æ˜¯å¦æœ‰æ›´æ–°,UIPanel.UpdateWidgetsæ–¹æ³•é‡Œè°ƒç”¨
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
+			+int PanelCompareFunc(UIWidget left, UIWidget right),UIPanelå†…çš„æ‰€æœ‰UIWidgetæ’åºæ–¹æ³•,æŒ‰ç…§UIWidget.mDepthä»å°åˆ°å¤§çš„é¡ºåº,å¦‚æœUIWidget.mDepthç›¸åŒ,åˆ™æœ‰æè´¨çš„åœ¨å‰,æ— æè´¨çš„åœ¨å,åœ¨UIPanelå†…ä½¿ç”¨
+			+int FullCompareFunc(UIWidget left, UIWidget right),å®Œå…¨è€ƒè™‘æ‰€æœ‰æ’åºå› ç´ ,å…ˆæ˜¯åˆ¤æ–­ä¸¤ä¸ªUIWidgetæ‰€å±çš„UIPanelçš„depth,æŒ‰ç…§ä»å°åˆ°å¤§,
+																å¦‚æœå¤„äºåŒä¸€ä¸ªUIPanelåˆ™ä½¿ç”¨PanelCompareFuncæ–¹æ³•,åœ¨NGUIToolså’ŒNGUIEditorToolsé‡Œå„æœ‰ä¸€å¤„ä½¿ç”¨
+	ç–‘é—®ï¼š
+		UIRect.finalAlphaä¸ºä»€ä¹ˆå’ŒUIWidget.mIsVisibleByAlphaå…±å­˜,ä¸¤è€…æœ‰å„è‡ªä¸åŒçš„éœ€æ±‚ä¹ˆ?
 UIBasicSprite : UIWidget
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-	ÊµÀıÊôĞÔ£º
-	ÊµÀı·½·¨£º
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+	å®ä¾‹å±æ€§ï¼š
+	å®ä¾‹æ–¹æ³•ï¼š
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
 UISprite : UIBasicSprite
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-	ÊµÀıÊôĞÔ£º
-	ÊµÀı·½·¨£º
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+	å®ä¾‹å±æ€§ï¼š
+	å®ä¾‹æ–¹æ³•ï¼š
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
 	
 UITexture : UIBasicSprite
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-	ÊµÀıÊôĞÔ£º
-	ÊµÀı·½·¨£º
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+	å®ä¾‹å±æ€§ï¼š
+	å®ä¾‹æ–¹æ³•ï¼š
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
 	
 UILabel : UIWidget
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-	ÊµÀıÊôĞÔ£º
-	ÊµÀı·½·¨£º
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+	å®ä¾‹å±æ€§ï¼š
+	å®ä¾‹æ–¹æ³•ï¼š
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
 
 UIGeometry
-	½éÉÜ£ºUIWidgetÅÉÉúÀàÉú³ÉµÄÍø¸ñÊı¾İ´æ´¢ÔÚUIGeometryÀï
-	ÊµÀı×Ö¶Î£º
-			+verts:List<Vector3>,¾ØÕó±ä»»Ç°µÄ¶¥µãÎ»ÖÃ
-			+uvs:List<Vector2>,UV×ø±ê
-			+cols:List<Color>,¶¥µãÑÕÉ«,UIWidget.OnFill·½·¨²ÎÊı,¾ÍÊÇUIWidget.geometry.verts/uvs/cols
-			-mRtpVerts:List<Vector3>,¾ØÕó±ä»»µ½ËùÊôUIPanel¾Ö²¿¿Õ¼äºóµÄ¶¥µãÎ»ÖÃ
-			-mRtpNormal:Vector3,·¨Ïß,¶¥µã¹²Ïí
-			-mRtpTan:Vector4,ÇĞÏß,¶¥µã¹²Ïí
-	ÊµÀıÊôĞÔ£º
-			+hasVertices bool,get,¸ÃUIGeometryÊÇ·ñÓĞ¶¥µãÊı¾İ
+	ä»‹ç»ï¼šUIWidgetæ´¾ç”Ÿç±»ç”Ÿæˆçš„ç½‘æ ¼æ•°æ®å­˜å‚¨åœ¨UIGeometryé‡Œ
+	å®ä¾‹å­—æ®µï¼š
+			+verts:List<Vector3>,çŸ©é˜µå˜æ¢å‰çš„é¡¶ç‚¹ä½ç½®
+			+uvs:List<Vector2>,UVåæ ‡
+			+cols:List<Color>,é¡¶ç‚¹é¢œè‰²,UIWidget.OnFillæ–¹æ³•å‚æ•°,å°±æ˜¯UIWidget.geometry.verts/uvs/cols
+			-mRtpVerts:List<Vector3>,çŸ©é˜µå˜æ¢åˆ°æ‰€å±UIPanelå±€éƒ¨ç©ºé—´åçš„é¡¶ç‚¹ä½ç½®
+			-mRtpNormal:Vector3,æ³•çº¿,é¡¶ç‚¹å…±äº«
+			-mRtpTan:Vector4,åˆ‡çº¿,é¡¶ç‚¹å…±äº«
+	å®ä¾‹å±æ€§ï¼š
+			+hasVertices bool,get,è¯¥UIGeometryæ˜¯å¦æœ‰é¡¶ç‚¹æ•°æ®
 			
-	ÊµÀı·½·¨£º
-			+Clear(),verts/uvs/cols/mRtpVerts,Õâ¼¸¸ö½á¹¹¶¼Çå¿Õ
-			+ApplyTransform(Matrix4x4 widgetToPanel, bool generateNormals = true),¶Ô¶¥µãÊı¾İÓ¦ÓÃ¾ØÕó±ä»»µ½ÊôUIPanel¾Ö²¿¿Õ¼ä,°üÀ¨·¨ÏßºÍÇĞÏß,±ä»»ºóµÄ¶¥µã´æ´¢ÔÚmRtpNormalÀï
-			+WriteToBuffers(List<Vector3> v, List<Vector2> u, List<Color> c, List<Vector3> n, List<Vector4> t, List<Vector2> u2),°ÑUIGeometryÀïÎ¬»¤µÄ¾ØÕó±ä»»ºóµÄ¶¥µãÎ»ÖÃ,
-						uv,ÑÕÉ«,·¨ÏßºÍÇĞÏßÌî³äµ½²ÎÊıÀï.ÓÉUIWidget.WriteToBuffers·½·¨µ÷ÓÃ
+	å®ä¾‹æ–¹æ³•ï¼š
+			+Clear(),verts/uvs/cols/mRtpVerts,è¿™å‡ ä¸ªç»“æ„éƒ½æ¸…ç©º
+			+ApplyTransform(Matrix4x4 widgetToPanel, bool generateNormals = true),å¯¹é¡¶ç‚¹æ•°æ®åº”ç”¨çŸ©é˜µå˜æ¢åˆ°å±UIPanelå±€éƒ¨ç©ºé—´,åŒ…æ‹¬æ³•çº¿å’Œåˆ‡çº¿,å˜æ¢åçš„é¡¶ç‚¹å­˜å‚¨åœ¨mRtpNormalé‡Œ
+			+WriteToBuffers(List<Vector3> v, List<Vector2> u, List<Color> c, List<Vector3> n, List<Vector4> t, List<Vector2> u2),æŠŠUIGeometryé‡Œç»´æŠ¤çš„çŸ©é˜µå˜æ¢åçš„é¡¶ç‚¹ä½ç½®,
+						uv,é¢œè‰²,æ³•çº¿å’Œåˆ‡çº¿å¡«å……åˆ°å‚æ•°é‡Œ.ç”±UIWidget.WriteToBuffersæ–¹æ³•è°ƒç”¨
 														
 																							
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
 	
 UIDrawCall : MonoBehaviour
-	½éÉÜ£º
-	Î¯ÍĞ£º
+	ä»‹ç»ï¼š
+	å§”æ‰˜ï¼š
 		+void OnCreateDrawCall(UIDrawCall dc, MeshFilter filter, MeshRenderer ren),
-	ÊµÀı×Ö¶Î£º
+	å®ä¾‹å­—æ®µï¼š
 			+isDirty:bool = false,
-			+onCreateDrawCall:OnCreateDrawCall,ÔÚÒ»¸öUIPanelÄÚ´´½¨ĞÂDCÊ±,¸ÃÎ¯ÍĞ±»´¥·¢,UIPanel.FillAllDrawCallsÊ±°ÑUIPanel.onCreateDrawCall¸³Öµ¸øUIDrawCall.onCreateDrawCall,Ä¿Ç°Ã»µØ·½ÓÃ
-	ÊµÀıÊôĞÔ£º
-	ÊµÀı·½·¨£º
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
-			+Destroy(UIDrawCall dc),Èç¹ûÓĞonCreateDrawCallÔòÖ±½ÓUnityEngine.Object.Destroy()²¢·µ»Ø,¿´ÆğÀ´ÏñÊÇdcÓÉÍâ²¿Î¯ÍĞÔÚÎ¬»¤;
-									·ñÔòÈç¹ûÔÚÔËĞĞ´ÓmActiveListÒÆ³ı,Ìí¼Óµ½mInactiveList,Òş²Ødc.gameObject,²¢ÖÃdc.mIsNewÎªtrue;Èç¹ûÊÇ±à¼­Æ÷Ä£Ê½ÔòÖ±½ÓUnityEngine.Object.DestroyImmediate
+			+onCreateDrawCall:OnCreateDrawCall,åœ¨ä¸€ä¸ªUIPanelå†…åˆ›å»ºæ–°DCæ—¶,è¯¥å§”æ‰˜è¢«è§¦å‘,UIPanel.FillAllDrawCallsæ—¶æŠŠUIPanel.onCreateDrawCallèµ‹å€¼ç»™UIDrawCall.onCreateDrawCall,ç›®å‰æ²¡åœ°æ–¹ç”¨
+	å®ä¾‹å±æ€§ï¼š
+	å®ä¾‹æ–¹æ³•ï¼š
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
+			+Destroy(UIDrawCall dc),å¦‚æœæœ‰onCreateDrawCallåˆ™ç›´æ¥UnityEngine.Object.Destroy()å¹¶è¿”å›,çœ‹èµ·æ¥åƒæ˜¯dcç”±å¤–éƒ¨å§”æ‰˜åœ¨ç»´æŠ¤;
+									å¦åˆ™å¦‚æœåœ¨è¿è¡Œä»mActiveListç§»é™¤,æ·»åŠ åˆ°mInactiveList,éšè—dc.gameObject,å¹¶ç½®dc.mIsNewä¸ºtrue;å¦‚æœæ˜¯ç¼–è¾‘å™¨æ¨¡å¼åˆ™ç›´æ¥UnityEngine.Object.DestroyImmediate
 	
 UIPanel : UIRect
-	Î¯ÍĞ£º
+	å§”æ‰˜ï¼š
 		+Material OnCreateMaterial(UIWidget widget, Material mat),
 		
-	½éÉÜ£º
-	ÊµÀı×Ö¶Î£º
-			+widgets:List<UIWidget>,¸ÃUIPanelËù¹ÜÏ½µÄËùÓĞUIWidget,ÓĞAddWidgetºÍRemoveWidgetÁ½¸ö·½·¨¸ºÔğ¸üĞÂ,Íâ²¿´úÂë²»ÔÊĞí¸üĞÂ,
-			+drawCalls:List<UIDrawCall>,ÓÉ¸ÃUIPanel´´½¨µÄËùÓĞUIDrawCall,FillDrawCallºÍFillAllDrawCallsÁ½¸ö·½·¨¹¹½¨,SetDirtyºÍalpha±éÀúisDirtyÖÃÎªtrue,OnDisableÈ«É¾³ıUIDrawCall²¢Çå¿Õ,
-										UpdateSelfÀïÓĞÉ¾³ı²Ù×÷,UpdateDrawCallsÀï×ö±ä»»,LateUpdateºÍFindDrawCallÀïÊ¹ÓÃ,Íâ²¿´úÂë²»ÔÊĞí¸üĞÂ,
-			-mRebuild:bool = false,ÊÇ·ñÖØ½¨¸ÃUIPanelÏÂµÄËùÓĞDC,³ıÇ¿ÖÆĞÔ·½·¨RefreshÍâ,½öÔÚAddWidgetºÍRemoveWidgetÁ½¸ö·½·¨Àï¿ÉÄÜ´¥·¢
-			-mSortWidgets:bool = false,ÊÇ·ñĞèÒª¶ÔUIPanelËùÊôµÄUIWidgetÃÇÖØÅÅĞò,µ«Ä¿Ç°Ã»µØ·½ÖÃÎªtrue,ÔÚ¹«¿ª·½·¨SortWidgets·½·¨ÀïÖØÅÅÁËwidgets,²¢ÖÃÎªÁËfalse,
-			+onCreateMaterial:OnCreateMaterial,Îªµ¥¸öwidget×Ô¶¨Òå²ÄÖÊ,ÎªÁËÓµÓĞ¶ÀÒ»µÄdc,Ä¿Ç°Ã»ÓÃµ½,
-			+onCreateDrawCall:UIDrawCall.OnCreateDrawCall,¶Ô½ÓUIDrawCall.onCreateDrawCall,²¢¶ÔÍâÌá¹©·şÎñ,Ä¿Ç°Ã»µØ·½ÓÃ
-	ÊµÀıÊôĞÔ£º
-			+override alpha,ĞŞ¸Äºó±éÀúdrawCalls²¢½«UIDrawCall.isDirtyÖÃÎªtrue
-	ÊµÀı·½·¨£º
-			+float CalculateFinalAlpha(int frameID),ÒÔµİ¹éĞÎÊ½¿¼ÂÇ¸¸½ÚµãµÄUIRect.finalAlpha,²¢³ËÒÔUIPanel.mAlpha,×÷ÎªUIPanelµÄUIRect.finalAlpha
-			+SetDirty(),±éÀúdrawCalls²¢½«isDirtyÖÃÎªtrue,µ÷ÓÃInvalidate(true)
-			#override OnDisable(),±éÀúdrawCalls²¢É¾³ıÃ¿¸öUIDrawCall,Çå¿ÕdrawCalls,
+	ä»‹ç»ï¼š
+	å®ä¾‹å­—æ®µï¼š
+			+widgets:List<UIWidget>,è¯¥UIPanelæ‰€ç®¡è¾–çš„æ‰€æœ‰UIWidget,æœ‰AddWidgetå’ŒRemoveWidgetä¸¤ä¸ªæ–¹æ³•è´Ÿè´£æ›´æ–°,å¤–éƒ¨ä»£ç ä¸å…è®¸æ›´æ–°,
+			+drawCalls:List<UIDrawCall>,ç”±è¯¥UIPanelåˆ›å»ºçš„æ‰€æœ‰UIDrawCall,FillDrawCallå’ŒFillAllDrawCallsä¸¤ä¸ªæ–¹æ³•æ„å»º,SetDirtyå’Œalphaéå†isDirtyç½®ä¸ºtrue,OnDisableå…¨åˆ é™¤UIDrawCallå¹¶æ¸…ç©º,
+										UpdateSelfé‡Œæœ‰åˆ é™¤æ“ä½œ,UpdateDrawCallsé‡Œåšå˜æ¢,LateUpdateå’ŒFindDrawCallé‡Œä½¿ç”¨,å¤–éƒ¨ä»£ç ä¸å…è®¸æ›´æ–°,
+			-mRebuild:bool = false,æ˜¯å¦é‡å»ºè¯¥UIPanelä¸‹çš„æ‰€æœ‰DC,é™¤å¼ºåˆ¶æ€§æ–¹æ³•Refreshå¤–,ä»…åœ¨AddWidgetå’ŒRemoveWidgetä¸¤ä¸ªæ–¹æ³•é‡Œå¯èƒ½è§¦å‘
+			-mSortWidgets:bool = false,æ˜¯å¦éœ€è¦å¯¹UIPanelæ‰€å±çš„UIWidgetä»¬é‡æ’åº,ä½†ç›®å‰æ²¡åœ°æ–¹ç½®ä¸ºtrue,åœ¨å…¬å¼€æ–¹æ³•SortWidgetsæ–¹æ³•é‡Œé‡æ’äº†widgets,å¹¶ç½®ä¸ºäº†false,
+			+onCreateMaterial:OnCreateMaterial,ä¸ºå•ä¸ªwidgetè‡ªå®šä¹‰æè´¨,ä¸ºäº†æ‹¥æœ‰ç‹¬ä¸€çš„dc,ç›®å‰æ²¡ç”¨åˆ°,
+			+onCreateDrawCall:UIDrawCall.OnCreateDrawCall,å¯¹æ¥UIDrawCall.onCreateDrawCall,å¹¶å¯¹å¤–æä¾›æœåŠ¡,ç›®å‰æ²¡åœ°æ–¹ç”¨
+	å®ä¾‹å±æ€§ï¼š
+			+override alpha,ä¿®æ”¹åéå†drawCallså¹¶å°†UIDrawCall.isDirtyç½®ä¸ºtrue
+	å®ä¾‹æ–¹æ³•ï¼š
+			+float CalculateFinalAlpha(int frameID),ä»¥é€’å½’å½¢å¼è€ƒè™‘çˆ¶èŠ‚ç‚¹çš„UIRect.finalAlpha,å¹¶ä¹˜ä»¥UIPanel.mAlpha,ä½œä¸ºUIPanelçš„UIRect.finalAlpha
+			+SetDirty(),éå†drawCallså¹¶å°†isDirtyç½®ä¸ºtrue,è°ƒç”¨Invalidate(true)
+			#override OnDisable(),éå†drawCallså¹¶åˆ é™¤æ¯ä¸ªUIDrawCall,æ¸…ç©ºdrawCalls,
 			-LateUpdate(),
 			-UpdateSelf(),
-			+SortWidgets(),¶ÔUIPanelÄÚËùÏ½µÄUIWidget°´ÕÕUIWidget.PanelCompareFunc±È½Ï¹æÔòÅÅĞò,²¢ÖØÖÃmSortWidgetsÎªfalse,ÔÚ±à¼­Æ÷·ÇÔËĞĞÄ£Ê½ÏÂ,ĞŞ¸ÄÁËUIWidget.depth»á´¥·¢¸Ã·½·¨,
+			+SortWidgets(),å¯¹UIPanelå†…æ‰€è¾–çš„UIWidgetæŒ‰ç…§UIWidget.PanelCompareFuncæ¯”è¾ƒè§„åˆ™æ’åº,å¹¶é‡ç½®mSortWidgetsä¸ºfalse,åœ¨ç¼–è¾‘å™¨éè¿è¡Œæ¨¡å¼ä¸‹,ä¿®æ”¹äº†UIWidget.depthä¼šè§¦å‘è¯¥æ–¹æ³•,
 			-FillAllDrawCalls(),
 			+FillDrawCall(UIDrawCall dc),
 			-UpdateDrawCalls(int sortOrder),
 			-UpdateWidgets(),
 			+UIDrawCall FindDrawCall(UIWidget w),
-	¾²Ì¬×Ö¶Î£º
-	¾²Ì¬·½·¨£º
-	ÒÉÎÊ£º
+	é™æ€å­—æ®µï¼š
+	é™æ€æ–¹æ³•ï¼š
+	ç–‘é—®ï¼š
 		
 			
 	
-×î¼ÑÊµ¼ù£º
-		¾¡Á¿²»ĞŞ¸ÄUIPanel.alpha
+æœ€ä½³å®è·µï¼š
+		å°½é‡ä¸ä¿®æ”¹UIPanel.alpha
 
 		
-×Ü½á
-meshÊı¾İ¸üĞÂ
-meshÊı¾İÓĞÄÄĞ©
-	ÑÕÉ«(°üÀ¨alpha),¶¥µãÎ»ÖÃ(UIRectµÄposºÍsize),¶¥µãÊıÁ¿,uv
-ÉÏ²ã´¥·¢¸üĞÂµÄÌõ¼ş£¿
-¸üĞÂºóÈçºÎ»º´æ£¿
+æ€»ç»“
+meshæ•°æ®æ›´æ–°
+meshæ•°æ®æœ‰å“ªäº›
+	é¢œè‰²(åŒ…æ‹¬alpha),é¡¶ç‚¹ä½ç½®(UIRectçš„poså’Œsize),é¡¶ç‚¹æ•°é‡,uv
+ä¸Šå±‚è§¦å‘æ›´æ–°çš„æ¡ä»¶ï¼Ÿ
+æ›´æ–°åå¦‚ä½•ç¼“å­˜ï¼Ÿ
 
-±¸Íü
-UIGeometryÊÇÒ»¸öUIWidget¶ÔÓ¦µÄÍø¸ñÊı¾İ³éÏó£¬×îÖÕÒª±»ºÏ²¢µ½Ò»¸ö´óµÄDCÀïÈ¥
-UIWidget.WriteToBuffers·½·¨£¬°ÑUIWidgetµÄÍø¸ñÊı¾İÌî³äµ½DCÀï£¬ÔÚUIPanel.FillXXXDC·½·¨Àï
-UIWidget.mLocalToPanel×Ö¶Î£¬×÷ÓÃ
-UIWidget.CreatePanel·½·¨
+å¤‡å¿˜
+UIGeometryæ˜¯ä¸€ä¸ªUIWidgetå¯¹åº”çš„ç½‘æ ¼æ•°æ®æŠ½è±¡ï¼Œæœ€ç»ˆè¦è¢«åˆå¹¶åˆ°ä¸€ä¸ªå¤§çš„DCé‡Œå»
+UIWidget.WriteToBuffersæ–¹æ³•ï¼ŒæŠŠUIWidgetçš„ç½‘æ ¼æ•°æ®å¡«å……åˆ°DCé‡Œï¼Œåœ¨UIPanel.FillXXXDCæ–¹æ³•é‡Œ
+UIWidget.mLocalToPanelå­—æ®µï¼Œä½œç”¨
+UIWidget.CreatePanelæ–¹æ³•
