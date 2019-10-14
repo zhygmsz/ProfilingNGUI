@@ -98,6 +98,7 @@ UIWidget : UIRect
 			+SetDirty(),如果UIWidget.drawCall不为null,则将UIWidget.drawCall.isDirty置为true;如果UIWidget.drawCall为null,则调用UIWidget.CreatePanel方法为UIWidget创建UIWidget.panel字段
 			+UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),更新(存在一个不同)UIWidget的mIsVisibleByAlpha和mIsVisibleByPanel,并置UIRect.mChanged为true,
 			+UPdateGeometry(int frame),更新UIWidget,选择性填充UIWidget.geometry,并返回是否有更新,UIPanel.UpdateWidgets方法里调用
+            +WriteToBuffers(List<Vector3> v, List<Vector2> u, List<Color> c, List<Vector3> n, List<Vector4> t, List<Vector2> u2),内部调用UIWidget.geometry.WriteToBuffers(v, u, c, n ,t, u2)
 	静态字段：
 	静态方法：
 			+int PanelCompareFunc(UIWidget left, UIWidget right),UIPanel内的所有UIWidget排序方法,按照UIWidget.mDepth从小到大的顺序,如果UIWidget.mDepth相同,则有材质的在前,无材质的在后,在UIPanel内使用
@@ -217,7 +218,5 @@ mesh数据有哪些
 更新后如何缓存？
 
 备忘
-UIGeometry是一个UIWidget对应的网格数据抽象，最终要被合并到一个大的DC里去
-UIWidget.WriteToBuffers方法，把UIWidget的网格数据填充到DC里，在UIPanel.FillXXXDC方法里
 UIWidget.mLocalToPanel字段，作用
 UIWidget.CreatePanel方法
