@@ -430,7 +430,7 @@ public class UIWidget : UIRect
 			return mDepth;
 		}
 		set
-		{
+		{ 
 			if (mDepth != value)
 			{
 				if (panel != null) panel.RemoveWidget(this);
@@ -1472,7 +1472,9 @@ public class UIWidget : UIRect
 		if (mIsVisibleByAlpha && mLastAlpha != finalAlpha) mChanged = true;
 		mLastAlpha = finalAlpha;
 
-		if (mChanged)
+        // zhy
+        // mChanged字段在UIWidget派生类里有很多置为true的情况，在“临门一脚”前又从新计算了一遍finalAlpha和上一帧对比来判定是否alpha改变
+        if (mChanged)
 		{
 			if (mIsVisibleByAlpha && finalAlpha > 0.001f && shader != null)
 			{
@@ -1480,18 +1482,28 @@ public class UIWidget : UIRect
 
 				if (fillGeometry)
 				{
-					geometry.Clear();
+                    // zhy
+                    // Clear操作把结构体的List清空，然后用OnFill方法再重新生成结构体并填充到List里。在List里的结构体也是存储在了堆上，GC
+                    // zhy优化
+                    // 固定List长度并默认填充好结构体（把顶点退化掉），OnFill方法里不再创建新结构体，而是从头到尾的填充已存在的结构体
+                    // 至于长度选择，可以根据不同的UIWidget派生类区分对待，如UIBasicSprite少一些，UILabel多一些。这个数量需要定量分析出来，哪些UI设定影响最后的顶点数量？
+                    // 如果在OnFill方法里发现既有长度不足时，因为是List，直接继续Add新的就好
+                    geometry.Clear();
 					OnFill(geometry.verts, geometry.uvs, geometry.cols);
 				}
-
-				if (geometry.hasVertices)
+                
+                // zhy
+                // 如果OnFill方法过后有顶点，则更新到UIPanel局部空间下，并返回
+                if (geometry.hasVertices)
 				{
 					// Want to see what's being filled? Uncomment this line.
 					//Debug.Log("Fill " + name + " (" + Time.frameCount + ")");
 
 					if (mMatrixFrame != frame)
 					{
-						mLocalToPanel = panel.worldToLocal * cachedTransform.localToWorldMatrix;
+                        // zhy疑问
+                        // mLocalToPanel作用？和UIPanel的滑动与裁剪有关吗？
+                        mLocalToPanel = panel.worldToLocal * cachedTransform.localToWorldMatrix;
 						mMatrixFrame = frame;
 					}
 					geometry.ApplyTransform(mLocalToPanel, panel.generateNormals);
@@ -1499,12 +1511,17 @@ public class UIWidget : UIRect
 					mChanged = false;
 					return true;
 				}
-
-				mChanged = false;
+                // zhy
+                // 该方法的返回值用来反映当前帧和上一帧相比，UIWidget是否有改变，包括重建并同步到UIPanel局部空间，单纯同步到UIPanel局部空间，和清空网格数据。
+                // 逻辑走到这里，说明当前帧该UIWidget可见，清空了原网格数据，但当前帧并没有网格数据。如果hadVertices为true说明上一帧有网格数据这一帧没了，UIWidget改变了
+                // 如果hadVertices为false说明上一帧没网格数据，这一帧也没，虽然当前帧可见，但整个UIWidget没改变
+                mChanged = false;
 				return hadVertices;
 			}
 			else if (geometry.hasVertices)
 			{
+                // zhy
+                // 如果这次UIWidget不可见，并且当前UIWidget上有顶点，则要清空旧顶点数据
 				if (fillGeometry) geometry.Clear();
 				mMoved = false;
 				mChanged = false;
@@ -1516,6 +1533,8 @@ public class UIWidget : UIRect
 			// Want to see what's being moved? Uncomment this line.
 			//Debug.Log("Moving " + name + " (" + Time.frameCount + ")");
 
+            // zhy
+            // 只是移动了该UIWidget，仅需重新同步到UIPanel局部空间下
 			if (mMatrixFrame != frame)
 			{
 				mLocalToPanel = panel.worldToLocal * cachedTransform.localToWorldMatrix;
@@ -1526,6 +1545,8 @@ public class UIWidget : UIRect
 			mChanged = false;
 			return true;
 		}
+        // zhy
+        // 当前帧，该UIWidget没mChanged也没mMoved
 		mMoved = false;
 		mChanged = false;
 		return false;
