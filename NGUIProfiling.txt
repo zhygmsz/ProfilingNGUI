@@ -85,6 +85,7 @@ UIRect ： MonoBehaviour
 UIWidget : UIRect
 	介绍：
 	实例字段：
+			+panel:UIPanel,UIWidget所属的UIPanel,通过UIWidget.CreatePanel方法查找,在计算UIWidget的depth时,会用到该字段
 			-mIsVisibleByAlpha:bool = true,按alpha来看该UIWidget是否可见,大于0.001即为可见,UIWidget.UpdateVisibility方法里对该字段更新,在UIWidget.UpdateGeometry方法里使用,
 			-mIsVisibleByPanel:bool = true,按UIPanel来看该UIWidget是否可见,被完全裁剪了不可见,由UIWidget.UpdateVisibility方法对该字段更新,和mIsVisibleByAlpha一起贡献isVisible部分因子,
 			-mLastAlpha:float = 0f,在UIWidget.UpdateGeometry方法里使用,承接UIWidget.CalculateFinalAlpha(frame)返回值,并用来判断当前frame的finalAlpha和上一次的finalAlpha相比是否有改变
@@ -94,6 +95,7 @@ UIWidget : UIRect
 	实例方法：
 			+float CalculateFinalAlpha(int frameID),内部调用了UpdateFinalAlpha(int frameID)方法,计算出UIRect.finalAlpha,并返回
 			#UpdateFinalAlpha(int frameID),以递归形式考虑父节点的UIRect.finalAlpha,并乘以UIWidget的UIWidget.mColor.a,相乘结果存到UIWidget的UIRect.finalAlpha里,供后续逻辑使用
+			+SetDirty(),如果UIWidget.drawCall不为null,则将UIWidget.drawCall.isDirty置为true;如果UIWidget.drawCall为null,则调用UIWidget.CreatePanel方法为UIWidget创建UIWidget.panel字段
 			+UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),更新(存在一个不同)UIWidget的mIsVisibleByAlpha和mIsVisibleByPanel,并置UIRect.mChanged为true,
 			+UPdateGeometry(int frame),更新UIWidget,选择性填充UIWidget.geometry,并返回是否有更新,UIPanel.UpdateWidgets方法里调用
 	静态字段：
@@ -135,10 +137,24 @@ UILabel : UIWidget
 	静态方法：
 
 UIGeometry
-	介绍：网格数据存储类,对于网格数据较多的UILabel,恰巧又只是位置移动,则可以使用该类,网格数据只需要对顶点应用变换矩阵即可。使用后增加部分内存,但性能表现非常好。
+	介绍：UIWidget派生类生成的网格数据存储在UIGeometry里
 	实例字段：
+			+verts:List<Vector3>,矩阵变换前的顶点位置
+			+uvs:List<Vector2>,UV坐标
+			+cols:List<Color>,顶点颜色,UIWidget.OnFill方法参数,就是UIWidget.geometry.verts/uvs/cols
+			-mRtpVerts:List<Vector3>,矩阵变换到所属UIPanel局部空间后的顶点位置
+			-mRtpNormal:Vector3,法线,顶点共享
+			-mRtpTan:Vector4,切线,顶点共享
 	实例属性：
+			+hasVertices bool,get,该UIGeometry是否有顶点数据
+			
 	实例方法：
+			+Clear(),verts/uvs/cols/mRtpVerts,这几个结构都清空
+			+ApplyTransform(Matrix4x4 widgetToPanel, bool generateNormals = true),对顶点数据应用矩阵变换到属UIPanel局部空间,包括法线和切线,变换后的顶点存储在mRtpNormal里
+			+WriteToBuffers(List<Vector3> v, List<Vector2> u, List<Color> c, List<Vector3> n, List<Vector4> t, List<Vector2> u2),把UIGeometry里维护的矩阵变换后的顶点位置,
+						uv,颜色,法线和切线填充到参数里.由UIWidget.WriteToBuffers方法调用
+														
+																							
 	静态字段：
 	静态方法：
 	
@@ -199,3 +215,9 @@ mesh数据有哪些
 	颜色(包括alpha),顶点位置(UIRect的pos和size),顶点数量,uv
 上层触发更新的条件？
 更新后如何缓存？
+
+备忘
+UIGeometry是一个UIWidget对应的网格数据抽象，最终要被合并到一个大的DC里去
+UIWidget.WriteToBuffers方法，把UIWidget的网格数据填充到DC里，在UIPanel.FillXXXDC方法里
+UIWidget.mLocalToPanel字段，作用
+UIWidget.CreatePanel方法
