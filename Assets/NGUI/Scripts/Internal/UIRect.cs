@@ -256,8 +256,12 @@ public abstract class UIRect : MonoBehaviour
 	{
 		get
 		{
-			if (parent != null) return mParent.root;
-
+			if (parent != null)
+            {
+                // zhy 向上递归的方式回溯到UI Root节点上
+                return mParent.root;
+            }
+            // zhy 代码走到这里，transform.name应该是UI Root了
 			if (!mRootSet)
 			{
 				mRootSet = true;
@@ -777,14 +781,22 @@ public abstract class UIRect : MonoBehaviour
 
 	public virtual void ParentHasChanged ()
 	{
+        //Debug.LogError("----------------------------------UIRect.ParentHasChanged");
 		mParentFound = false;
+        // zhy Transform.GetComponentInParent方法从自身开始，所以使用当前transform的parent
 		UIRect pt = NGUITools.FindInParents<UIRect>(cachedTransform.parent);
 
 		if (mParent != pt)
 		{
-			if (mParent) mParent.mChildren.Remove(this);
+			if (mParent)
+            {
+                mParent.mChildren.Remove(this);
+            }
 			mParent = pt;
-			if (mParent) mParent.mChildren.Add(this);
+			if (mParent)
+            {
+                mParent.mChildren.Add(this);
+            }
 			mRootSet = false;
 		}
 	}

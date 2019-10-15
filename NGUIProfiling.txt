@@ -23,16 +23,18 @@ UIRect ： MonoBehaviour
 			
 			#mGo:GameObject,
 			#mTrans:Transform,
-			#mChildren:BetterList<UIRect>,
+			#mChildren:BetterList<UIRect>,UIRect所属的所有子UIRect脚本实例,
 			#mChanged:bool = true,主要在UIWidget.UpdateGeometry方法里做判定依据,UIRect派生类里触发该字段为true的情况如下,
 									有UIBasicSprite(fillDirection,fillAmount,invert),UISprite(spriteName),UILabel(ProcessText),UIWidget(UpdateVisibility),
+			#mParentFound:bool = false,是否已经找到父UIRect节点,多个地方置为false,如UIRect.OnInit方法里,UIRect.OnDisable方法里,UIRect.ParentHasChanged方法里,UIWidget.CreatePanel方法里,
+										意为需要重新查找父UIRect节点,但并没有真的查找,而是在访问UIRect.parent属性时判断如果为false则重新查找,
 			#mParentFound:bool = false,
 			-mUpdateAnchors:bool = true,
 			-mUpdateFrame:int = -1,
 			-mAnchorsCached:bool = false,
-			-mRoot:UIRoot,
-			-mParent:UIRect,
-			-mRootSet:bool = false,
+			-mRoot:UIRoot,该UIRect所属的UIRoot,
+			-mParent:UIRect,父UIRect节点,每次访问UIRect.parent属性时选择性查找最新的
+			-mRootSet:bool = false,是否找到UIRect所属的UIPanel,UIRect.root会递归向父UIRect节点遍历,最后起作用的是UI Root节点上的UIPanel脚本实例的UIRect.mRootSet字段
 			#mCam:Camera
 			
 			#mStarted:bool = false,
@@ -46,17 +48,19 @@ UIRect ： MonoBehaviour
 			virtual +isAnchoredHorizontally:bool,get
 			virtual +isAnchoredVertically:bool,get
 			virtual +cabBeAnchored:bool,get
-			+parent:UIRect,get
-			+root:UIRoot,get
+			+parent:UIRect,get,当前UIRect的父UIRect节点,先判定mParentFound为false则重新查找并标记mParentFound为true,查找结果存储在UIRect.mParent字段,最后返回mParent
+			+root:UIRoot,get,以向父UIRect节点递归的方式循环,直到遇到UI Root节点,再获取UIRoot脚本,存储在UIRect.mRoot字段,并返回,UIPnel和UILabel两个类用的多
 			+isAnchored:bool,get
 			abstract +alpha:float,get set,local alpha,UIWidget的派生类对alpha有不同的计算方式以及使用方式
 			abstract +Vector3[] localCorners,get
 			abstract +Vector3[] worldCorners,get
 			#cameraRayDistance:float,
 	实例方法：
-			abstract +float CalculateFinalAlpha(int frameID),UIWidget和UIPanel两个直接派生类重写了该方法,用于计算UIRect.finalAlpha（递归形式考虑父节点）
-			virtual +Invalidate(bool includeChildren),使该UIRect无效,将UIRect.mChanged置为true,并判断是否需要遍历子节点,如alpha改动则includeChildren为true,颜色变化则为false,
+			+abstract float CalculateFinalAlpha(int frameID),UIWidget和UIPanel两个直接派生类重写了该方法,用于计算UIRect.finalAlpha（递归形式考虑父节点）
+			+virtual Invalidate(bool includeChildren),使该UIRect无效,将UIRect.mChanged置为true,并判断是否需要遍历子节点,如alpha改动则includeChildren为true,颜色变化则为false,
 													UIRect派生类覆写该方法并添加逻辑
+			+virtual ParentHasChanged(),当UIRect的父UIRect节点发生改变时调用该方法,标记mParentFound为false,查找新父UIRect节点,新旧parent不等则把该UIRect从旧parent.mChildren里删除,
+										并添加到新parent.mChildren里,并置mRootSet为false,意为重新找UIRoot
 	静态字段：
 			#mSides:Vector3[],避免GC的临时变量
 	静态方法：
@@ -86,6 +90,9 @@ UIWidget : UIRect
 	介绍：
 	实例字段：
 			+panel:UIPanel,UIWidget所属的UIPanel,通过UIWidget.CreatePanel方法查找,在计算UIWidget的depth时,会用到该字段
+			+geometry:UIGeometry,每个UIWidget都有一个UIGeometry,用于存储UIWidget网格数据
+			#mPlayMode:bool = true,任意player或编辑器运行状态为true,编辑器非运行状态为false,用于在编辑器非运行环境下的即时逻辑
+			+mLocalToPanel:Matrix4x4,把UIWidget顶点位置由UIWidget局部空间转换到所属UIPanel局部空间,重建网格数据和移动都会触发使用该字段
 			-mIsVisibleByAlpha:bool = true,按alpha来看该UIWidget是否可见,大于0.001即为可见,UIWidget.UpdateVisibility方法里对该字段更新,在UIWidget.UpdateGeometry方法里使用,
 			-mIsVisibleByPanel:bool = true,按UIPanel来看该UIWidget是否可见,被完全裁剪了不可见,由UIWidget.UpdateVisibility方法对该字段更新,和mIsVisibleByAlpha一起贡献isVisible部分因子,
 			-mLastAlpha:float = 0f,在UIWidget.UpdateGeometry方法里使用,承接UIWidget.CalculateFinalAlpha(frame)返回值,并用来判断当前frame的finalAlpha和上一次的finalAlpha相比是否有改变
@@ -93,9 +100,15 @@ UIWidget : UIRect
 			+isVisible,get,UIWidget对外的总可见性,由UICamera.Raycast使用,UIPanel的FindDrawCall,FillDrawCall,FillAllDrawCalls三个方法使用,
 							由mIsVisibleByAlpha,mIsVisibleByPanel,mIsInFront,UIRect.finalAlpha,NGUITools.GetActive(this)这几部分共同组成,
 	实例方法：
-			+float CalculateFinalAlpha(int frameID),内部调用了UpdateFinalAlpha(int frameID)方法,计算出UIRect.finalAlpha,并返回
+			+override float CalculateFinalAlpha(int frameID),内部调用了UpdateFinalAlpha(int frameID)方法,计算出UIRect.finalAlpha,并返回
 			#UpdateFinalAlpha(int frameID),以递归形式考虑父节点的UIRect.finalAlpha,并乘以UIWidget的UIWidget.mColor.a,相乘结果存到UIWidget的UIRect.finalAlpha里,供后续逻辑使用
+			+override Invalidate(bool includeChildren),mChanged置为true,mAlphaFrameID置为-1,如果有所属UIPnel,则调用UIWidget.UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),
+													调用UIWidget.UpdateFinalAlpha(int frameID),并选择性的调用基类
 			+SetDirty(),如果UIWidget.drawCall不为null,则将UIWidget.drawCall.isDirty置为true;如果UIWidget.drawCall为null,则调用UIWidget.CreatePanel方法为UIWidget创建UIWidget.panel字段
+			+RemoveFromPanel(),把该UIWidget从所属UIPanel删除,并置UIWidget.panel和UIWidget.drawCall两个字段为null,
+			+CreatePanel():UIPanel,为该UIWidget查找所属UIPanel,如果没有找到则创建,把UIWidget添加到UIPanel维护的UIWidget列表,mParentFound置为false是为了找父UIRect节点,并调用UIWidget.Invalidate(true),
+							在访问UIWidget的时发现没有所属UIPanel,则调用该方法,如返回raycastDepth属性时发现没所属UIPanel,SetDirty时发现没有drawCall,父节点发生改变后,OnStart方法里等
+			+override ParentHasChanged(),除了调用base.ParentHasChanged外,如果还更新了所属UIPanel,则调用RemoveFromPanel和CreatePanel两个方法,重新找所属UIPanel
 			+UpdateVisibility(bool visibleByAlpha, bool visibleByPanel),更新(存在一个不同)UIWidget的mIsVisibleByAlpha和mIsVisibleByPanel,并置UIRect.mChanged为true,
 			+UPdateGeometry(int frame),更新UIWidget,选择性填充UIWidget.geometry,并返回是否有更新,UIPanel.UpdateWidgets方法里调用
             +WriteToBuffers(List<Vector3> v, List<Vector2> u, List<Color> c, List<Vector3> n, List<Vector4> t, List<Vector2> u2),内部调用UIWidget.geometry.WriteToBuffers(v, u, c, n ,t, u2)
@@ -162,7 +175,7 @@ UIGeometry
 UIDrawCall : MonoBehaviour
 	介绍：
 	委托：
-		+void OnCreateDrawCall(UIDrawCall dc, MeshFilter filter, MeshRenderer ren),
+			+void OnCreateDrawCall(UIDrawCall dc, MeshFilter filter, MeshRenderer ren),
 	实例字段：
 			+isDirty:bool = false,
 			+onCreateDrawCall:OnCreateDrawCall,在一个UIPanel内创建新DC时,该委托被触发,UIPanel.FillAllDrawCalls时把UIPanel.onCreateDrawCall赋值给UIDrawCall.onCreateDrawCall,目前没地方用
@@ -189,8 +202,9 @@ UIPanel : UIRect
 	实例属性：
 			+override alpha,修改后遍历drawCalls并将UIDrawCall.isDirty置为true
 	实例方法：
-			+float CalculateFinalAlpha(int frameID),以递归形式考虑父节点的UIRect.finalAlpha,并乘以UIPanel.mAlpha,作为UIPanel的UIRect.finalAlpha
+			+override float CalculateFinalAlpha(int frameID),以递归形式考虑父节点的UIRect.finalAlpha,并乘以UIPanel.mAlpha,作为UIPanel的UIRect.finalAlpha
 			+SetDirty(),遍历drawCalls并将isDirty置为true,调用Invalidate(true)
+			+override ParentHasChanged(),除了调用base.ParentHasChanged外,还调用了UIPanel.FindParent方法,找父UIPanel节点
 			#override OnDisable(),遍历drawCalls并删除每个UIDrawCall,清空drawCalls,
 			-LateUpdate(),
 			-UpdateSelf(),
@@ -209,14 +223,19 @@ UIPanel : UIRect
 最佳实践：
 		尽量不修改UIPanel.alpha
 
+
+疑问：
+	UIRect.ParentHasChanged方法以及派生类覆写方法的调用时机,都看不出和transform.parent更新有关系,如何触发的
 		
 总结
 mesh数据更新
 mesh数据有哪些
 	颜色(包括alpha),顶点位置(UIRect的pos和size),顶点数量,uv
+填充mesh数据细节？
+	UISprite,UILabel,UITexture等
 上层触发更新的条件？
 更新后如何缓存？
 
 备忘
-UIWidget.mLocalToPanel字段，作用
-UIWidget.CreatePanel方法
+UIPanel.FindParent方法
+UIPanel.parentPanel字段

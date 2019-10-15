@@ -4,9 +4,23 @@ using UnityEngine;
 
 public class TestIsPlaying : MonoBehaviour
 {
+    public UIPanel panel1;
+    public UIPanel panel2;
+    public GameObject mGo;
+
+    private void Awake()
+    {
+        UIEventListener.Get(gameObject).onClick = (GameObject go) =>
+        {
+            mGo.transform.parent = panel2.transform;
+        };
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        //mGo.transform.parent = panel2.transform;
+
         if (Application.isPlaying)
         {
             int val = 1;
@@ -31,4 +45,6 @@ public class TestIsPlaying : MonoBehaviour
     {
         int val = 1;
     }
+
+
 }

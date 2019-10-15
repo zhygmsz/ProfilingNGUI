@@ -1018,12 +1018,17 @@ public class UIWidget : UIRect
 
 	public UIPanel CreatePanel ()
 	{
+        if (transform.name == "go")
+        {
+            Debug.LogError("-----------------------------UIWidget.CreatePanel, " + transform.name);
+        }
 		if (mStarted && panel == null && enabled && NGUITools.GetActive(gameObject))
 		{
 			panel = UIPanel.Find(cachedTransform, true, cachedGameObject.layer);
 
 			if (panel != null)
 			{
+                // zhy 该UIWidget找到所属UIPanel后紧接着找父UIRect节点
 				mParentFound = false;
 				panel.AddWidget(this);
 				CheckLayer();
@@ -1053,6 +1058,7 @@ public class UIWidget : UIRect
 
 	public override void ParentHasChanged ()
 	{
+        //Debug.LogError("---------------------------------UIWidget.ParentHasChanged");
 		base.ParentHasChanged();
 
 		if (panel != null)
