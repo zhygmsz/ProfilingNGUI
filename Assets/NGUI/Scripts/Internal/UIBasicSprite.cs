@@ -383,7 +383,8 @@ public abstract class UIBasicSprite : UIWidget
 		}
 		else
 		{
-			AddVertexColours(cols, ref gc, 1, 1);
+            // zhy left是1,right是2, bottom是1,top是2
+            AddVertexColours(cols, ref gc, 1, 1);
 			AddVertexColours(cols, ref gc, 1, 2);
 			AddVertexColours(cols, ref gc, 2, 2);
 			AddVertexColours(cols, ref gc, 2, 1);
@@ -397,7 +398,7 @@ public abstract class UIBasicSprite : UIWidget
 	void SlicedFill (List<Vector3> verts, List<Vector2> uvs, List<Color> cols)
 	{
 		Vector4 br = border * pixelSize;
-		
+
 		if (br.x == 0f && br.y == 0f && br.z == 0f && br.w == 0f)
 		{
 			SimpleFill(verts, uvs, cols);
@@ -407,7 +408,17 @@ public abstract class UIBasicSprite : UIWidget
 		Color gc = drawingColor;
 		Vector4 v = drawingDimensions;
 
-		mTempPos[0].x = v.x;
+        // ---w---
+        // |     |
+        // x     z
+        // |     |
+        // ---y---
+
+        // 1---3
+        // |   |
+        // 0---2
+
+        mTempPos[0].x = v.x;
 		mTempPos[0].y = v.y;
 		mTempPos[3].x = v.z;
 		mTempPos[3].y = v.w;
@@ -500,12 +511,17 @@ public abstract class UIBasicSprite : UIWidget
 	[System.Diagnostics.DebuggerStepThrough]
 	void AddVertexColours (List<Color> cols, ref Color color, int x, int y)
 	{
+        // zhy 能进入该方法的type只有Simple和Sliced,并且原则上border值不为空和Sliced搭配才有效,Simple是忽略border的
+        // zhy x变量没有使用,因为不支持左右颜色渐变
 		Vector4 br = border * pixelSize;
 		if (type == Type.Simple || (br.x == 0f && br.y == 0f && br.z == 0f && br.w == 0f))
 		{
+            // zhy 如果type是Sliced但border都为0,其实就是退化成了Simple了,当然了只是对于渐变效果来说是等价的,
 			if (y == 0 || y == 1)
 			{
+                // zhy 把顶点颜色和渐变色相乘运算作为最后的顶点色
 				cols.Add(color * mGradientBottom);
+
 			}
 			else if (y == 2 || y == 3)
 			{
