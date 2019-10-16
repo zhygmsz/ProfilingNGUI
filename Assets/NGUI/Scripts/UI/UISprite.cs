@@ -230,6 +230,11 @@ public class UISprite : UIBasicSprite
 	{
 		get
 		{
+            // ———w——-
+            // |     |
+            // x     z
+            // |     |
+            // ———y——-
 			UISpriteData sp = GetAtlasSprite();
 			if (sp == null) return base.border;
 			return new Vector4(sp.borderLeft, sp.borderBottom, sp.borderRight, sp.borderTop);
@@ -319,11 +324,17 @@ public class UISprite : UIBasicSprite
 		{
 			Vector2 offset = pivotOffset;
 
-			float x0 = -offset.x * mWidth;
+            // zhy mWidth和mHeight是UIWidget在Inspector面板上的sise参数，pivotOffset的xy都在[0,1]内，描述的是锚点位置在UIWidget区域内的归一化坐标值
+            // 坐标系的原点在左下角，X轴向右，Y轴向上
+            // 计算得出的x0,x1,y0,y1四个值在UIWidget的区域内划分出了一个子区域，该子区域就是供渲染使用的，也是渲染数据的顶点局部位置
+            // 一般而言，四个取值是0,0,1,1，后面的计算里会影响四个值的是pad参数，pad参数可正可负，表示该UISprite里在图集大纹理里的边界延伸，
+            // pad参数和UISprite尺寸共同影响了最后的渲染尺寸
+            float x0 = -offset.x * mWidth;
 			float y0 = -offset.y * mHeight;
 			float x1 = x0 + mWidth;
 			float y1 = y0 + mHeight;
 
+            // zhy 接下来的计算主要考虑了pad参数对x0,x1,y0,y1的影响，还考虑了flip
 			if (GetAtlasSprite() != null && mType != Type.Tiled)
 			{
 				int padLeft = mSprite.paddingLeft;
@@ -354,6 +365,8 @@ public class UISprite : UIBasicSprite
 					if ((w & 1) != 0) ++padRight;
 					if ((h & 1) != 0) ++padTop;
 
+                    // zhy 长度为w的内容要渲染在mWidth的宽度里，pad参数在渲染上的表现是边界空白或切出去的部分，
+                    // pad在w里占比为1，pad在mWidth里占比计算就是下面的公式
 					px = (1f / w) * mWidth;
 					py = (1f / h) * mHeight;
 				}
@@ -383,15 +396,24 @@ public class UISprite : UIBasicSprite
 
 			Vector4 br = (mAtlas != null) ? border * pixelSize : Vector4.zero;
 
-			float fw = br.x + br.z;
+            // zhy 如果该UISprite上没有UIAtlas，则br的值都为0，最后的x0,x1,y0,y1就是原始值（和基类的相同）
+
+            float fw = br.x + br.z;
 			float fh = br.y + br.w;
 
+            string name = transform.name;
+
+            // zhy mDrawRegion相当于视口，在x0,x1,y0,y1围成的区域里再划出一个子区域来用于渲染，值得一提的是mDrawRegion.x作为比例不是无脑的从x0到x1，
+            // 而是要考虑border值，具体来说是x1去掉左右两条border线
 			float vx = Mathf.Lerp(x0, x1 - fw, mDrawRegion.x);
 			float vy = Mathf.Lerp(y0, y1 - fh, mDrawRegion.y);
 			float vz = Mathf.Lerp(x0 + fw, x1, mDrawRegion.z);
 			float vw = Mathf.Lerp(y0 + fh, y1, mDrawRegion.w);
 
 			return new Vector4(vx, vy, vz, vw);
+
+            // zhy 对于UISprite的渲染总结，UIWidget区域，UIRect锚点，UISprite参数（UISpriteData，位置，偏移，pad，border），UISPrite检视面板上的参数（mType,mFlip,mFillX等）
+            // 以上因素共同决定出了渲染区域的局部坐标，再配合uv
 		}
 	}
 

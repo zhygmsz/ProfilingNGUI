@@ -563,7 +563,7 @@ public class UIWidget : UIRect
 		{
 			Vector2 offset = pivotOffset;
 
-			float x0 = -offset.x * mWidth;
+            float x0 = -offset.x * mWidth;
 			float y0 = -offset.y * mHeight;
 			float x1 = x0 + mWidth;
 			float y1 = y0 + mHeight;
@@ -1018,10 +1018,6 @@ public class UIWidget : UIRect
 
 	public UIPanel CreatePanel ()
 	{
-        if (transform.name == "go")
-        {
-            Debug.LogError("-----------------------------UIWidget.CreatePanel, " + transform.name);
-        }
 		if (mStarted && panel == null && enabled && NGUITools.GetActive(gameObject))
 		{
 			panel = UIPanel.Find(cachedTransform, true, cachedGameObject.layer);

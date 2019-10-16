@@ -47,7 +47,9 @@ public abstract class UIBasicSprite : UIWidget
 	[HideInInspector][SerializeField] protected float mFillAmount = 1f;
 	[HideInInspector][SerializeField] protected bool mInvert = false;
 	[HideInInspector][SerializeField] protected Flip mFlip = Flip.Nothing;
+    // zhy 只有Simple和Sliced两个模式下有渐变
 	[HideInInspector][SerializeField] protected bool mApplyGradient = false;
+    // zhy 扩展 支持左右渐变色
 	[HideInInspector][SerializeField] protected Color mGradientTop = Color.white;
 	[HideInInspector][SerializeField] protected Color mGradientBottom = new Color(0.7f, 0.7f, 0.7f);
 
@@ -179,7 +181,13 @@ public abstract class UIBasicSprite : UIWidget
 			{
 				Vector4 b = border * pixelSize;
 				int min = Mathf.RoundToInt(b.x + b.z);
-				return Mathf.Max(base.minWidth, ((min & 1) == 1) ? min + 1 : min);
+                // [(min & 1) == 1]该表达式时计算min是否是奇数，为true则为奇数，为false则为偶数，在这里min的合法值都是>=0的
+                // 把min的范围延伸到整个整数，不管正负，该表达式仍然是成立的。
+                // 计算机内存里存储的是数字的补码，正数的补码和原码相同，负数的补码是原码的符号位外取反再整体+1。所以补码和原码的最低位是0是1情况不会改变
+                // 所以负数也可以使用该表达式计算奇偶。
+                // 计算机用补码表示数字的方式，因为可以统一正负数的算术运算形式。
+                // 下面这段代码，min如果是奇数则+1的方式变成偶数
+                return Mathf.Max(base.minWidth, ((min & 1) == 1) ? min + 1 : min);
 			}
 			return base.minWidth;
 		}
@@ -346,10 +354,16 @@ public abstract class UIBasicSprite : UIWidget
 
 	void SimpleFill (List<Vector3> verts, List<Vector2> uvs, List<Color> cols)
 	{
-		Vector4 v = drawingDimensions;
+        // zhy 局部空间下的顶点位置，考虑了UISpriteData（pad和border），和UIWidget.mDrawRegion
+        Vector4 v = drawingDimensions;
+        // 考虑了flip的UV
 		Vector4 u = drawingUVs;
 		Color gc = drawingColor;
 
+        // zhy 顶点顺序
+        // 1---2
+        // |   |
+        // 0---3
 		verts.Add(new Vector3(v.x, v.y));
 		verts.Add(new Vector3(v.x, v.w));
 		verts.Add(new Vector3(v.z, v.w));

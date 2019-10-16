@@ -6,13 +6,18 @@ UIPanel的裁剪,UIScrollView的滑动,
 UIRoot屏幕适配,
 NGUI事件判定流程,UICamera
 
+整合名字版渲染方案到NGUI里,对上层提供一个脚本,挂在GameObject上,默认该节点以及其所有子节点们使用新渲染方案,该GameObject在UI上是一个独立单位,参考名字版用法,不和NGUI其他组件发生关联
+编辑器非运行状态下导出一份该GameObject对应的网格数据,运行时针对sprite和label都有单独的更新函数,每个sprite和label都有唯一编号,该编号是可视化和非可视化的桥梁,也是上层业务调用各种方法的凭证
+可视化是编辑器非运行状态下Inspector视图,非可视化是网格数据
+和UIDrawCall的关系是重点,再有和UIRoot的适配
+
 UIRect ： MonoBehaviour
 	介绍：抽象类,继承自MonoBehaviour,是NGUI框架的根基类
 	枚举：
-		+AnchorUpdate:
-			OnEnable,
-			OnUpdate,
-			OnStart,
+			+AnchorUpdate:
+				OnEnable,
+				OnUpdate,
+				OnStart,
 	实例字段：
 			+leftAnchor:AnchorPoint,
 			+rightAnchor:AnchorPoint,
@@ -97,7 +102,7 @@ UIWidget : UIRect
 			-mIsVisibleByPanel:bool = true,按UIPanel来看该UIWidget是否可见,被完全裁剪了不可见,由UIWidget.UpdateVisibility方法对该字段更新,和mIsVisibleByAlpha一起贡献isVisible部分因子,
 			-mLastAlpha:float = 0f,在UIWidget.UpdateGeometry方法里使用,承接UIWidget.CalculateFinalAlpha(frame)返回值,并用来判断当前frame的finalAlpha和上一次的finalAlpha相比是否有改变
 	实例属性：
-			+isVisible,get,UIWidget对外的总可见性,由UICamera.Raycast使用,UIPanel的FindDrawCall,FillDrawCall,FillAllDrawCalls三个方法使用,
+			+isVisible:bool,get,UIWidget对外的总可见性,由UICamera.Raycast使用,UIPanel的FindDrawCall,FillDrawCall,FillAllDrawCalls三个方法使用,
 							由mIsVisibleByAlpha,mIsVisibleByPanel,mIsInFront,UIRect.finalAlpha,NGUITools.GetActive(this)这几部分共同组成,
 	实例方法：
 			+override float CalculateFinalAlpha(int frameID),内部调用了UpdateFinalAlpha(int frameID)方法,计算出UIRect.finalAlpha,并返回
@@ -120,9 +125,53 @@ UIWidget : UIRect
 	疑问：
 		UIRect.finalAlpha为什么和UIWidget.mIsVisibleByAlpha共存,两者有各自不同的需求么?
 UIBasicSprite : UIWidget
-	介绍：
+	介绍：UISprite和UITexture的基类,只有网格数据填充细节,和影响网格填充细节的字段
+	枚举：
+			+Type:
+				Simple,
+				Sliced,
+				Tiled,
+				Filled,
+				Advanced,
+			+FillDirection:
+				Horizontal,
+				Vertical,
+				Radial90,
+				Radial180,
+				Radial360,
+			+AdvancedType:
+				Invisible,
+				Sliced,
+				Tiled,
+			+Flip:
+				Nothing,
+				Horizontally,
+				Vertically,
+				Both,
 	实例字段：
+			#mType:Type = Type.Simple,UIBasicSprite的外在表现,有普通,九宫格,平铺,填充等
+			#mFillDirection:FillDirection = FillDirection.Radial360,填充方向,只有mType是Type.Filled时才有用
+			#mFillAmount:float = 1f,填充比例,只有mType是Type.Filled时才有用
+			#mInvert:bool = false,是否翻转填充方向,只有mType是Type.Filled时才有用
+			#mFlip:Flip = Flip.Nothing,翻转类型,有水平,垂直,都有,都不,mType取Type.Advanced外,都有该值可选,本质是翻转了uv
+			#mApplyGradient:bool = false,是否应用渐变效果,mType取Type.Simple和Type.Sliced时才有效,只支持上下渐变
+			#mGradientTop:Color = Color.white,渐变色上,mApplyGradient为true时有效
+			#mGradientBottom:Color = new Color(0.7f, 0.7f, 0.7f),渐变色下,mApplyGradient为true时有效
+			-mInnerUV:Rect,对于UIBasicSprite(UISprite和UITexture)来说,四条border边界围起来的区域,在图集纹理或单独纹理区域的UV值,私有变量,由派生类计算得出后只在该类里构建网格数据的UV使用
+			-mOuterUV:Rect,对于IUBasicSprite(UISprite和UITexture)来说,UISpriteData的x,y,width,height四个值围起来的区域,在图集纹理或单独纹理区域的UV值
 	实例属性：
+			+virtual type:Type,get,set,有效set触发UIWidget.MarkAsChanged方法
+			+flip:Flip,get,set,有效set触发UIWidget.MarkAsChanged方法
+			+fillDirection:FillDirection,get,set,有效set置mChanged为true
+			+fillAmount:float,get,set,有效set置mChanged为true
+			+override minWidth:int,get,如果mType为Type.Sliced或Type.Advanced,计算border的左右边界和,+1的方式把奇变成偶,再和UIWidget.minWidth比大小,取较大值,
+										如果mType是其他类型则直接返回UIWidget.minWidth
+			+override minHeight:int,get,同UIBasicSprite.minWidth
+			+invert:bool,get,set,有效set置mChanged为true
+			+hasBorder:bool,get,是否有border值,四边界但凡有一个不等于0就返回true,否则返回false
+			+virtual premultipliedAlpha:bool,get,像素值是否预乘alpha,固定返回false,留给派生类覆写
+			+virtual pixelSize:int,get,纹理的像素缩放比例,固定返回1,留给派生类覆写
+			#virtual padding:Vector4,get,纹理的周边空余位置尺寸,固定返回Vector4.zero,留给派生类覆写
 	实例方法：
 	静态字段：
 	静态方法：
@@ -225,7 +274,7 @@ UIPanel : UIRect
 
 
 疑问：
-	UIRect.ParentHasChanged方法以及派生类覆写方法的调用时机,都看不出和transform.parent更新有关系,如何触发的
+	transform.parent更改后,如何执行代码流程,是否和DC的更新有关
 		
 总结
 mesh数据更新
@@ -239,3 +288,4 @@ mesh数据有哪些
 备忘
 UIPanel.FindParent方法
 UIPanel.parentPanel字段
+UIBasicSprite.mInnerUV和mOuterUV
