@@ -360,7 +360,12 @@ public class UISprite : UIBasicSprite
 				float px = 1f;
 				float py = 1f;
 
-				if (w > 0 && h > 0 && (mType == Type.Simple || mType == Type.Filled))
+                // zhy pad的含义，对于一个UISpriteData来说在UIAtlas的图集纹理里划定了一个区域（x,y,width,height），如果没有pad则该区域会映射到UIWidget的区域上，
+                // 具体来说应该是UIWidget.mDrawRegion区域上，但有了pad后就发生了变化，UISpriteData划定的区域要加入pad因素了。正值向外，负值向内
+                // 这样四个方向的pad值会围出一个圈，这个圈映射到UIWidget的区域上（考虑UIWidget.mDrawRegion）
+                // 理论上对于mOuterUV的计算要考虑pad因素，但并没有，而是把pad因素放到了局部空间下顶点位置的偏移上
+
+                if (w > 0 && h > 0 && (mType == Type.Simple || mType == Type.Filled))
 				{
 					if ((w & 1) != 0) ++padRight;
 					if ((h & 1) != 0) ++padTop;
@@ -412,10 +417,11 @@ public class UISprite : UIBasicSprite
 
 			return new Vector4(vx, vy, vz, vw);
 
-            // zhy 对于UISprite的渲染总结，UIWidget区域，UIRect锚点，UISprite参数（UISpriteData，位置，偏移，pad，border），UISPrite检视面板上的参数（mType,mFlip,mFillX等）
-            // 以上因素共同决定出了渲染区域的局部坐标，再配合uv
-		}
-	}
+            // zhy 对于UISprite的渲染总结，UIWidget尺寸，UIRect锚点，UISpriteData（位置，偏移，pad，border），UISPrite检视面板上的参数（mType,mFlip,mFillX等）
+            // drawingDimensions是UISprite的最终渲染区域，该区域的数值单位是局部空间像素。由UIRect锚点和UIWidget尺寸计算出原始渲染区域（x0,x1,y0,y1）
+            // 接下来考虑flip和pad的影响，最后应用UIWidget.mDrawRegion的因素（需要额外考虑border），最后drawingDimensions用于生成网格数据
+        }
+    }
 
 	/// <summary>
 	/// Whether the texture is using a premultiplied alpha material.
@@ -555,11 +561,15 @@ public class UISprite : UIBasicSprite
 		if (mSprite == null) mSprite = atlas.GetSprite(spriteName);
 		if (mSprite == null) return;
 
+        // zhy mSprite是UISPriteData，x,y,width,height还是依据图集纹理里的寻址方式，左上角为原点，Y向下，X向右
 		Rect outer = new Rect(mSprite.x, mSprite.y, mSprite.width, mSprite.height);
 		Rect inner = new Rect(mSprite.x + mSprite.borderLeft, mSprite.y + mSprite.borderTop,
 			mSprite.width - mSprite.borderLeft - mSprite.borderRight,
 			mSprite.height - mSprite.borderBottom - mSprite.borderTop);
 
+        // zhy 如果没有border，则inner则退化成outer
+
+        // zhy outer和inter两个矩形区域还是依据UISpriteData寻址方式。但经过下面的转换后outer和inner不再是像素为单位的尺寸，而是UV坐标，并且原点在左下角，Y向上，X向右
 		outer = NGUIMath.ConvertToTexCoords(outer, tex.width, tex.height);
 		inner = NGUIMath.ConvertToTexCoords(inner, tex.width, tex.height);
 

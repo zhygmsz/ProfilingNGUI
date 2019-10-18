@@ -321,6 +321,7 @@ public abstract class UIBasicSprite : UIWidget
 
 	protected void Fill (List<Vector3> verts, List<Vector2> uvs, List<Color> cols, Rect outer, Rect inner)
 	{
+        // zhy 两个私有变量，由派生类传进来，并且只在该类里使用，也就是说UIBasicSprite的所有派生类的网格数据生成细节都在UIBasicSprite里
 		mOuterUV = outer;
 		mInnerUV = inner;
 
@@ -408,15 +409,22 @@ public abstract class UIBasicSprite : UIWidget
 		Color gc = drawingColor;
 		Vector4 v = drawingDimensions;
 
+        // zhy v如下
         // ---w---
         // |     |
         // x     z
         // |     |
         // ---y---
 
-        // 1---3
-        // |   |
-        // 0---2
+        // zhy mTempPos[4]:Vector2，如下，mTempUVs依旧
+        // ----------------------3
+        // |                     |
+        // |    ------------2    |
+        // |    |           |    |
+        // |    |           |    |
+        // |    1------------    |
+        // |                     |
+        // 0----------------------
 
         mTempPos[0].x = v.x;
 		mTempPos[0].y = v.y;
@@ -438,6 +446,7 @@ public abstract class UIBasicSprite : UIWidget
 			mTempPos[1].x = mTempPos[0].x + br.x;
 			mTempPos[2].x = mTempPos[3].x - br.z;
 
+            // zhy mOuterUV和mInnerUV已经是原点在左下角的UV坐标
 			mTempUVs[0].x = mOuterUV.xMin;
 			mTempUVs[1].x = mInnerUV.xMin;
 			mTempUVs[2].x = mInnerUV.xMax;
@@ -530,6 +539,7 @@ public abstract class UIBasicSprite : UIWidget
 		}
 		else
 		{
+            // zhy 对于Sliced来说，共有内外两个矩形，共4条线。从以下代码上来，渐变色是线性过度的，考虑了border。
 			if (y == 0)
 			{
 				cols.Add(color*mGradientBottom);
@@ -560,15 +570,22 @@ public abstract class UIBasicSprite : UIWidget
 		Texture tex = mainTexture;
 		if (tex == null) return;
 
+        // zhy 如果没有border，则mInnerUV则退化成mOuterUV
+        // 如果有border，则要考虑border的对平铺的影响。
+        // 按理来说，一旦选择平铺方式，应该忽略掉border影响，可现在看代码并没有，这应该不算是一个好的默认设计。
 		Vector2 size = new Vector2(mInnerUV.width * tex.width, mInnerUV.height * tex.height);
 		size *= pixelSize;
 		if (size.x < 2f || size.y < 2f) return;
+        // zhy size是border围起来区域，因为是拿这个区域做平铺，所以对其大小做了限制
 
 		Color c = drawingColor;
 		Vector4 v = drawingDimensions;
 		Vector4 u;
 		Vector4 p;
 		var padding = this.padding;
+        // zhy u是考虑了flip后的纹理坐标四条边界线，使用的也是mInnerUV
+        // P是考虑了pixelSize因素后的四方向pad值
+        // 也就是说平铺算法里考虑了border和pad
 
 		if (mFlip == Flip.Horizontally || mFlip == Flip.Both)
 		{
@@ -604,28 +621,29 @@ public abstract class UIBasicSprite : UIWidget
 			p.w = padding.w * pixelSize;
 		}
 
-		
-
 		float x0 = v.x;
 		float y0 = v.y;
 
 		float u0 = u.x;
 		float v0 = u.y;
+        // zhy 接下来待创建的每个矩形网格里，X轴的左边界位置x0和纹理坐标u0，Y轴的下边界线位置y0和纹理坐标v0
 
-		
-		while (y0 < v.w)
+        // Y轴向循环，从下往上
+        while (y0 < v.w)
 		{
-			y0 += p.y;
-			x0 = v.x;
+			y0 += p.y; // 加入pad因素
+            x0 = v.x; // x0在内层循环里（X轴向）不停步进并累加，在这里重置
 			float y1 = y0 + size.y;
-			float v1 = u.w;
+			float v1 = u.w;  // Y轴向上边界线位置y1和纹理坐标v1
 
-			if (y1 > v.w)
+            // 如果步进后超过了渲染区域，则对纹理坐标线性插值，正是因为v1可能在被修改，所以才在上面重置
+            if (y1 > v.w)
 			{
 				v1 = Mathf.Lerp(u.y, u.w, (v.w - y0) / size.y);
 				y1 = v.w;
 			}
 
+            // X轴向循环，从左往右
 			while (x0 < v.z)
 			{
 				x0 += p.x;
@@ -656,6 +674,7 @@ public abstract class UIBasicSprite : UIWidget
 				x0 += size.x + p.z;
 			}
 			y0 += size.y + p.w;
+            // XY轴向步进后，算上pad值，开始下一次步进
 		}
 	}
 
@@ -671,20 +690,25 @@ public abstract class UIBasicSprite : UIWidget
 		Vector4 u = drawingUVs;
 		Color c = drawingColor;
 
+        // zhy drawingUVs已经是考虑过flip的
+
 		// Horizontal and vertical filled sprites are simple -- just end the sprite prematurely
 		if (mFillDirection == FillDirection.Horizontal || mFillDirection == FillDirection.Vertical)
 		{
 			if (mFillDirection == FillDirection.Horizontal)
 			{
+                // zhy fill并不是纹理坐标，只是一个差额
 				float fill = (u.z - u.x) * mFillAmount;
 
 				if (mInvert)
 				{
+                    // zhy 矩形的右边界文职和纹理坐标不动，左边界的重新计算
 					v.x = v.z - (v.z - v.x) * mFillAmount;
 					u.x = u.z - fill;
 				}
 				else
 				{
+                    // zhy 矩形的左边界位置和纹理坐标都不动，右边界的重新计算
 					v.z = v.x + (v.z - v.x) * mFillAmount;
 					u.z = u.x + fill;
 				}
@@ -705,6 +729,9 @@ public abstract class UIBasicSprite : UIWidget
 				}
 			}
 		}
+
+        // zhy 如果只是水平或垂直方向的flip，顶点和纹理坐标都计算完，mTempPos和mTempUVs就是最终值
+        // 如果是其他方式（辐射）的flip，则mTempPos和mTempUVs只是最原始的矩形四边界位置和纹理坐标，用于接下来的旋转计算
 
 		mTempPos[0] = new Vector2(v.x, v.y);
 		mTempPos[1] = new Vector2(v.x, v.w);
@@ -741,8 +768,16 @@ public abstract class UIBasicSprite : UIWidget
 					fy0 = 0f;
 					fy1 = 1f;
 
-					if (side == 0) { fx0 = 0f; fx1 = 0.5f; }
-					else { fx0 = 0.5f; fx1 = 1f; }
+					if (side == 0)
+                    {
+                        fx0 = 0f;
+                        fx1 = 0.5f;
+                    }
+                    else
+                    {
+                        fx0 = 0.5f;
+                        fx1 = 1f;
+                    }
 
 					mTempPos[0].x = Mathf.Lerp(v.x, v.z, fx0);
 					mTempPos[1].x = mTempPos[0].x;
@@ -828,6 +863,8 @@ public abstract class UIBasicSprite : UIWidget
 				return;
 			}
 		}
+
+        // zhy 水平或垂直方向的flip才会走到这里
 
 		// Fill the buffer with the quad for the sprite
 		for (int i = 0; i < 4; ++i)
@@ -1082,17 +1119,29 @@ public abstract class UIBasicSprite : UIWidget
 	static bool RadialCut (Vector2[] xy, Vector2[] uv, float fill, bool invert, int corner)
 	{
 		// Nothing to fill
-		if (fill < 0.001f) return false;
+		if (fill < 0.001f)
+        {
+            return false;
+        }
 
 		// Even corners invert the fill direction
-		if ((corner & 1) == 1) invert = !invert;
+		if ((corner & 1) == 1)
+        {
+            invert = !invert;
+        }
 
 		// Nothing to adjust
-		if (!invert && fill > 0.999f) return true;
+		if (!invert && fill > 0.999f)
+        {
+            return true;
+        }
 
 		// Convert 0-1 value into 0 to 90 degrees angle in radians
 		float angle = Mathf.Clamp01(fill);
-		if (invert) angle = 1f - angle;
+		if (invert)
+        {
+            angle = 1f - angle;
+        }
 		angle *= 90f * Mathf.Deg2Rad;
 
 		// Calculate the effective X and Y factors
@@ -1115,7 +1164,13 @@ public abstract class UIBasicSprite : UIWidget
 		int i2 = NGUIMath.RepeatIndex(corner + 2, 4);
 		int i3 = NGUIMath.RepeatIndex(corner + 3, 4);
 
-		if ((corner & 1) == 1)
+        // zhy 顶点顺序
+        // 1---2
+        // |   |
+        // 0---3
+
+        // zhy 判断corner是否是奇数，负数也成立
+        if ((corner & 1) == 1)
 		{
 			if (sin > cos)
 			{
@@ -1154,9 +1209,11 @@ public abstract class UIBasicSprite : UIWidget
 			{
 				sin /= cos;
 				cos = 1f;
+                Debug.LogError("sin = " + sin.ToString());
 
 				if (!invert)
 				{
+                    // zhy 当角度小于45°时，1和2顶点重合，四边形退化成一个三角形（2，3,0）和一条线段（0，1,2）
 					xy[i1].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
 					xy[i2].y = xy[i1].y;
 				}
@@ -1165,6 +1222,7 @@ public abstract class UIBasicSprite : UIWidget
 			{
 				cos /= sin;
 				sin = 1f;
+                Debug.LogError("cos = " + cos.ToString());
 
 				if (invert)
 				{
@@ -1174,12 +1232,21 @@ public abstract class UIBasicSprite : UIWidget
 			}
 			else
 			{
+                Debug.LogError("cos is equal sin");
 				cos = 1f;
 				sin = 1f;
 			}
 
-			if (invert) xy[i3].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
-			else xy[i1].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+			if (invert)
+            {
+                // zhy 45°时，3点重合到2点
+                xy[i3].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
+            }
+			else
+            {
+                // zhy 45°时，1点重合到2点
+                xy[i1].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+            }
 		}
 	}
 
