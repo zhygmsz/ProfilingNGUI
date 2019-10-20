@@ -800,6 +800,8 @@ public abstract class UIBasicSprite : UIWidget
 					mTempUVs[3].y = mTempUVs[0].y;
 
 					float val = !mInvert ? fillAmount * 2f - side : mFillAmount * 2f - (1 - side);
+                    string log = string.Format("side = {0}, val = {1}", side.ToString(), val.ToString());
+                    Debug.LogError(log);
 
 					if (RadialCut(mTempPos, mTempUVs, Mathf.Clamp01(val), !mInvert, NGUIMath.RepeatIndex(side + 3, 4)))
 					{
