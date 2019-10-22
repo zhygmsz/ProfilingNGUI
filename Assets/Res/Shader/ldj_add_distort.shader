@@ -46,6 +46,8 @@ Shader "Test/Additive_distort" {
             uniform float _U;
 
             uniform float4 _ClipRange = float4(-10000, -10000, 10000, 10000);
+            uniform float4 _ClipRange0 = float4(-1, -1, 1, 1);
+            uniform float2 _EffectScale = float2(1, 1);
             uniform float _EnableClip = 0;
             uniform float _IsWorld = 1;
 
@@ -60,6 +62,7 @@ Shader "Test/Additive_distort" {
                 float4 vertexColor : COLOR;
                 float4 worldPos : TEXCOORD1;
                 float4 clipPos : TEXCOORD2;
+                float2 norLocalPos : TEXCOORD3;
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
@@ -71,6 +74,7 @@ Shader "Test/Additive_distort" {
                 {
                     o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                     o.clipPos = o.pos;
+                    o.norLocalPos = v.vertex.xy * _EffectScale * _ClipRange0.zw + _ClipRange0.xy;
                 }
 
                 return o;
@@ -88,8 +92,9 @@ Shader "Test/Additive_distort" {
                 float3 emissive = (((2.0*_niuqu_tex_var.rgb)*_Maintex_var.rgb)*(_Maintex_var.rgb*i.vertexColor.rgb*(_TintColor.rgb*_GLOW*_TintColor.a)*_Maintex_var.a*i.vertexColor.a));
                 float3 finalColor = emissive;
 
-                if ((_EnableClip == 1))
+                if (_EnableClip == 1)
                 {
+                    /*
                     if (_IsWorld == 1)
                     {
                         if (i.worldPos.x <= _ClipRange.x || i.worldPos.x >= _ClipRange.z || i.worldPos.y <= _ClipRange.y || i.worldPos.y >= _ClipRange.w)
@@ -105,6 +110,17 @@ Shader "Test/Additive_distort" {
                             return fixed4(0, 0, 0, 0);
                         }
                     }
+                    */
+
+                    // NGUI方法
+                    float2 factor = float2(1, 1) - abs(i.norLocalPos);
+                    float finalAlpha = clamp(min(factor.x, factor.y), 0, 1);
+                    //finalColor *= finalAlpha;
+                    return fixed4(finalColor * finalAlpha, finalAlpha);
+                    //return fixed4(0, 0, 0, 0);
+                    //return fixed4(1, 1, 0, 1);
+                    //return fixed4(finalAlpha, finalAlpha, 0, 1);
+                    //return fixed4(abs(factor), 0, 1);
                 }
                 return fixed4(finalColor,1);
             }
@@ -112,5 +128,5 @@ Shader "Test/Additive_distort" {
         }
     }
     FallBack "Particles/Additive"
-    CustomEditor "ShaderForgeMaterialInspector"
+    //CustomEditor "ShaderForgeMaterialInspector"
 }
